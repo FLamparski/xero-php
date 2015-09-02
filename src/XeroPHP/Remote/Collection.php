@@ -2,6 +2,9 @@
 
 namespace XeroPHP\Remote;
 
+/**
+ * An array-like for collections of objects, such as InvoiceItems on an Invoice.
+ */
 class Collection extends \ArrayObject {
 
     /**
@@ -46,7 +49,11 @@ class Collection extends \ArrayObject {
     }
 
     /**
-     *  Remove all of the values int he collection
+     * Remove all of the values in the collection.
+     *
+     * Note that in some cases (one known case is ContactPersons)
+     * this might not work as expected due to upstream bugs:
+     * https://github.com/calcinai/xero-php/issues/63
      */
     public function removeAll(){
         foreach($this->_associated_objects as $parent_property => $object){

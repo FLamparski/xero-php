@@ -31,8 +31,8 @@ class Client {
     private $config;
     private $request;
 
-    /*
-     * "Cached" parameters - will change between signings.
+    /**
+     * @var array "Cached" parameters - will change between signings.
      */
     private $oauth_params;
 

@@ -8,8 +8,14 @@ use XeroPHP\Remote\Query;
 use XeroPHP\Remote\Request;
 use XeroPHP\Remote\URL;
 
+/**
+ * The base class for Xero applications.
+ */
 abstract class Application {
 
+    /**
+     * Default configuration
+     */
     protected static $_config_defaults = array(
         'xero'  => array(
             'site'            => 'https://api.xero.com',
@@ -41,16 +47,18 @@ abstract class Application {
     );
 
     /**
-     * @var array
+     * @var array Configuration for this instance
      */
     protected $config;
 
     /**
-     * @var Client
+     * @var Client The OAuth client for this instance
      */
     protected $oauth_client;
 
     /**
+     * Constructs a new Application object you can use to interact with Xero.
+     *
      * @param array $user_config
      */
     public function __construct(array $user_config) {
@@ -61,7 +69,7 @@ abstract class Application {
     }
 
     /**
-     * @return Client
+     * @return Client This instance's OAuth client
      */
     public function getOAuthClient() {
         return $this->oauth_client;
@@ -81,9 +89,11 @@ abstract class Application {
     }
 
     /**
-     * @param mixed $key
+     * Gets a config value.
+     *
+     * @param mixed $key The config property to return.
      * @return mixed
-     * @throws Exception
+     * @throws Exception If key does not exist.
      */
     public function getConfig($key) {
 
@@ -117,8 +127,8 @@ abstract class Application {
     /**
      * As you should never have a GUID for a non-existent object, will throw a NotFoundExceptioon
      *
-     * @param $model
-     * @param $guid
+     * @param $model Short class name of the thing you are trying to load, eg. "Accounting\\Contact"
+     * @param $guid The GUID
      * @return mixed
      * @throws Exception
      * @throws Remote\Exception\NotFoundException
@@ -145,7 +155,10 @@ abstract class Application {
 
 
     /**
-     * @param string $model
+     * Load all objects of a given type. Returns a Query so you can add Where and Order By clauses.
+     *
+     * @see Remote\Query for more options.
+     * @param string $model Short name of the thing you are trying to load, eg. "Accounting\\Contact"
      * @return Query
      * @throws Remote\Exception
      */
@@ -157,7 +170,12 @@ abstract class Application {
 
 
     /**
-     * @param Remote\Object $object
+     * Save the object to Xero, using PUT if there is no GUID and POST if there is.
+     *
+     * This method also modifies the passed in object to reflect the response
+     * from Xero when the operation succeeds.
+     *
+     * @param Remote\Object $object The object to save.
      * @return null
      * @throws Exception
      */
@@ -205,7 +223,14 @@ abstract class Application {
 
 
     /**
-     * @param array $objects
+     * Saves modified objects en masse, using one request.
+     *
+     * You can pass in multiple objects here provided that they are of the same
+     * type (ie. Contacts or Invoices but not a mix). Additionally, this method
+     * will use the `current()` object to determine whether to use PUT or POST,
+     * so mix objects to create and update at your own peril.
+     *
+     * @param array $objects The objects to save
      * @return null
      * @throws Exception
      */

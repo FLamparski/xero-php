@@ -7,10 +7,10 @@ use XeroPHP\Exception;
 use XeroPHP\Helpers;
 
 /**
- * Class Object
+ * Parent class for all Xero objects
  * @package XeroPHP\Remote
  *
- * todo - at 2.x, move this into the root of the project and refer to it as a model.  Also make this an ArrayObject to simplify storage
+ * @todo - at 2.x, move this into the root of the project and refer to it as a model.  Also make this an ArrayObject to simplify storage
  */
 abstract class Object implements ObjectInterface, \JsonSerializable, \ArrayAccess {
 

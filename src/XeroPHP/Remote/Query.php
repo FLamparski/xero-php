@@ -5,6 +5,9 @@ namespace XeroPHP\Remote;
 use XeroPHP\Application;
 use XeroPHP\Exception;
 
+/**
+ * Lets you query an API endpoint.
+ */
 class Query {
 
     const ORDER_ASC  = 'ASC';
@@ -20,6 +23,12 @@ class Query {
     private $page;
     private $offset;
 
+    /**
+     * Make a new instance.
+     *
+     * Normally you would use `$application->load('Accounting\\Contact')`,
+     * but you can do the equivalent with `(new Query($application))->from('Accounting\\Contact')`.
+     */
     public function __construct(Application $app) {
         $this->app = $app;
         $this->where = array();
@@ -41,6 +50,20 @@ class Query {
     }
 
     /**
+     * Adds to the Where clause of this query.
+     *
+     * If called with one string argument, it will add that argument to the
+     * Where clause directly, eg: `$query->where('Total>=1000')`.
+     * Calling with two arguments like `$query->where('Name', 'Foo Bar')` is equivalent
+     * to calling `$query->where('Name=="Foo Bar"')` .
+     *
+     * You can call this method multiple times; subsequent where clauses will
+     * be concatenated in an AND expression.
+     *
+     * Xero's Where clause expression language is not very well documented,
+     * but it behaves like a cross between SQL and C#, which means you'll
+     * need to use double quotes for strings or else it thinks it's a character literal.
+     *
      * @return $this
      */
     public function where() {
@@ -60,6 +83,7 @@ class Query {
     }
 
     /**
+     * Order by a particular field, ascending by default. Once per query.
      * @param string $order
      * @param string $direction
      * @return $this
@@ -71,6 +95,10 @@ class Query {
     }
 
     /**
+     * Modify the query to only return objects modified after a certain date.
+     * Useful if you want to sync between your own database and Xero with
+     * minimum amount of data transfer.
+     *
      * @param \DateTime|null $modifiedAfter
      * @return $this
      */
@@ -85,7 +113,8 @@ class Query {
     }
 
     /**
-     * @param int $page
+     * Return a page of results for endpoints that support paging.
+     * @param int $page The page number to return, default 1.
      * @return $this
      * @throws Exception
      */
@@ -112,7 +141,8 @@ class Query {
     }
 
     /**
-     * @return Collection
+     * Run the query.
+     * @return Collection The objects that match your query.
      */
     public function execute() {
 

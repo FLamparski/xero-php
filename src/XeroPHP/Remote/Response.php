@@ -14,6 +14,9 @@ use XeroPHP\Remote\Exception\OrganisationOfflineException;
 use XeroPHP\Remote\Exception\RateLimitExceededException;
 use XeroPHP\Remote\Exception\UnauthorizedException;
 
+/**
+ * A response from Xero.
+ */
 class Response {
 
     const STATUS_OK                   = 200;
@@ -54,14 +57,16 @@ class Response {
     }
 
     /**
-     * @throws BadRequestException
+     * Parse the response body.
+     *
+     * @throws BadRequestException On 400-series errors
      * @throws Exception
-     * @throws InternalErrorException
-     * @throws NotAvailableException
-     * @throws NotFoundException
-     * @throws NotImplementedException
+     * @throws InternalErrorException On 500-series errors
+     * @throws NotAvailableException On 500-series errors too
+     * @throws NotFoundException On a 404 error
+     * @throws NotImplementedException On a 501 error
      * @throws OrganisationOfflineException
-     * @throws RateLimitExceededException
+     * @throws RateLimitExceededException On some 500-series errors too
      * @throws UnauthorizedException
      */
     public function parse() {
@@ -110,6 +115,9 @@ class Response {
         }
     }
 
+    /**
+     * Get raw response body
+     */
     public function getResponseBody(){
         return $this->response_body;
     }
@@ -263,4 +271,4 @@ class Response {
     }
 
 
-} 
+}

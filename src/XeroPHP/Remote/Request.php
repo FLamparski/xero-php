@@ -6,7 +6,10 @@ use XeroPHP\Application;
 use XeroPHP\Exception;
 use XeroPHP\Helpers;
 
-
+/**
+ * Handles dispatching actual requests to Xero.
+ * It also allows low-level API access if you use setBody.
+ */
 class Request {
 
     const METHOD_GET    = 'GET';
@@ -37,7 +40,13 @@ class Request {
      */
     private $response;
 
-
+    /**
+     * Create a new request.
+     * @param Application app The application to use to access Xero
+     * @param URL url The URL to call
+     * @param string method The HTTP method to use
+     * @throws Exception When an incorrect method is specified.
+     */
     public function __construct(Application $app, URL $url, $method = self::METHOD_GET) {
 
         $this->app = $app;
@@ -61,6 +70,10 @@ class Request {
 
     }
 
+    /**
+     * Sign and send the request to Xero.
+     * @throws Exception In case of a cURL error, an Exception is thrown.
+     */
     public function send() {
 
         //Sign the request - this just sets the Authorization header
@@ -108,6 +121,9 @@ class Request {
         return $this->response;
     }
 
+    /**
+     * Set a URL parameter
+     */
     public function setParameter($key, $value) {
         $this->parameters[$key] = $value;
 
@@ -134,7 +150,8 @@ class Request {
     }
 
     /**
-     * @return \XeroPHP\Remote\Response
+     * Returns the response if the request has been sent, or null if it has not.
+     * @return \XeroPHP\Remote\Response|null
      */
     public function getResponse() {
         if(isset($this->response))
@@ -156,7 +173,7 @@ class Request {
     }
 
     /**
-     * @return string
+     * @return string The request method
      */
     public function getMethod() {
         return $this->method;
@@ -169,7 +186,14 @@ class Request {
         return $this->url;
     }
 
-
+    /**
+     * Sets the request body and content type (for POST/PUT requests).
+     *
+     * You can use this to send arbitrary XML to Xero, if you need to do something
+     * at a low level that XeroPHP can't easily do.
+     * @param string body The request body
+     * @param string content_type The MIME content type
+     */
     public function setBody($body, $content_type = self::CONTENT_TYPE_XML) {
 
         $this->setHeader(self::HEADER_CONTENT_LENGTH, strlen($body));
